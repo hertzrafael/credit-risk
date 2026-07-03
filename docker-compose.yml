@@ -2,10 +2,35 @@ services:
   app:
     build: .
     container_name: credit-risk-app
+    depends_on:
+      mlflow:
+        condition: service_healthy
     environment:
       - TEMP_DIR=/app/temp
       - MODEL_PATH=/app/temp/credit_risk_model.pkl
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     ports:
       - "8501:8501"
     volumes:
       - ./docker/temp:/app/temp
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./docker/temp:/temp
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+      --serve-artifacts
+      --allowed-hosts "*"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:5000/health')\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s

@@ -1,4 +1,7 @@
+from pathlib import Path
+
 import pandas as pd
+import os
 
 
 class Load:
@@ -8,5 +11,4 @@ class Load:
         
         
     def run(self):
-        pass
-    
+        self.df.to_csv(Path(os.getenv("TEMP_DIR")) / "credit_risk_data_gold.csv", index=False)
