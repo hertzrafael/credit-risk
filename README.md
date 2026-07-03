@@ -57,8 +57,6 @@ http://localhost:8501
 credit-risk/
 ├── model/        -> pipeline de treino e ML
 ├── view/         -> dashboard Streamlit
-├── temp/         -> modelos serializados (pickle)
-├── docker/       -> configuração de deploy
 ├── pyproject.toml
 └── docker-compose.yml
 ```
