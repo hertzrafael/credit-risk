@@ -122,7 +122,7 @@ def dashboard(age_filter, home_filter, income_filter):
         color_discrete_map={"Adimplente": "#2E86AB", "Inadimplente": "#E63946"},
     )
     fig1.update_traces(textinfo="percent+value")
-    st.plotly_chart(fig1, use_container_width=True)
+    st.plotly_chart(fig1, width='stretch')
  
     st.divider()
  
@@ -144,7 +144,7 @@ def dashboard(age_filter, home_filter, income_filter):
         points="outliers",
     )
     fig3.update_layout(showlegend=False)
-    st.plotly_chart(fig3, use_container_width=True)
+    st.plotly_chart(fig3, width='stretch')
  
     st.divider()
  
@@ -174,7 +174,7 @@ def dashboard(age_filter, home_filter, income_filter):
         color_continuous_scale="Reds",
     )
     fig4.update_layout(coloraxis_showscale=False)
-    st.plotly_chart(fig4, use_container_width=True)
+    st.plotly_chart(fig4, width='stretch')
  
     st.divider()
  
@@ -207,7 +207,7 @@ def dashboard(age_filter, home_filter, income_filter):
             color_continuous_scale="Reds",
         )
         fig5.update_layout(coloraxis_showscale=False)
-        st.plotly_chart(fig5, use_container_width=True)
+        st.plotly_chart(fig5, width='stretch')
  
         st.divider()
  
@@ -232,7 +232,7 @@ def dashboard(age_filter, home_filter, income_filter):
             "status_label": "Status",
         },
     )
-    st.plotly_chart(fig6, use_container_width=True)
+    st.plotly_chart(fig6, width='stretch')
  
     st.divider()
  
@@ -263,7 +263,7 @@ def dashboard(age_filter, home_filter, income_filter):
         zmax=1,
         aspect="auto",
     )
-    st.plotly_chart(fig7, use_container_width=True)
+    st.plotly_chart(fig7, width='stretch')
  
     st.divider()
  

@@ -1,74 +1,150 @@
-895 nulos em person_emp_length
+# Credit Risk Prediction
 
-3116 nulos em loan_int_rate
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange)
+![XGBoost](https://img.shields.io/badge/XGBoost-Model-green)
+![LightGBM](https://img.shields.io/badge/LightGBM-Model-brightgreen)
+![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-red)
+![MLflow](https://img.shields.io/badge/MLflow-Tracking-purple)
+![Docker](https://img.shields.io/badge/Docker-Container-blue)
+![Status](https://img.shields.io/badge/Project-Active-success)
 
-identificação de outliers em person_emp_length
+Sistema de previsão de risco de crédito baseado em Machine Learning com pipeline completo de ETL, treinamento, tracking com MLflow e dashboard interativo em Streamlit.
 
-35 registros com idade > percentil 99,9% (66 anos)
+O objetivo do projeto é estimar a probabilidade de inadimplência de clientes com base em variáveis financeiras e comportamentais.
 
+------------------------------------------------------------
+## TECNOLOGIAS UTILIZADAS
 
-## tratamento nulos:
-- person_emp_length: peguei a renda anual e coloquei um lower e upper bound de 1500, depois peguei os registros dentro desse limite e calculei a mediana, passando essa mediana para o valor nulo. como fallback, caso não tenha nenhum outro nessa mesma faixa de renda, será aplicada a mediana global do dataset.
-- loan_int_rate: Peguei a mediana do grupo (loan_grade)
+- Python 3.12
+- Scikit-learn
+- XGBoost
+- LightGBM
+- Pandas
+- NumPy
+- Streamlit
+- Matplotlib
+- SHAP
+- MLflow
+- Docker
+- Joblib
 
-## tratamento de outliers:
-- optei por não remoção, já que é claramente um erro de inserção nos dados
-- pessoas com idade maior que 100 anos, terá a idade por idade + person_emp_length (tempo em anos de trabalho)
+------------------------------------------------------------
+## COMO RODAR O PROJETO (DOCKER)
 
+### 1. Clonar o repositório
 
-## resultados:
-- primeiro resultado encontrado:
-MÉTRICAS DE LightGBM
-ROC AUC Calculado: 0.907738979422632
-Relatório de Classificação:
-              precision    recall  f1-score   support
+```bash
+git clone https://github.com/hertzrafael/credit-risk
+cd credit-risk
+```
 
-           0       0.92      0.92      0.92      7657
-           1       0.73      0.72      0.72      2118
+### 2. Subir a aplicação
 
-    accuracy                           0.88      9775
-   macro avg       0.82      0.82      0.82      9775
-weighted avg       0.88      0.88      0.88      9775
+```bash
+docker compose up --build
+```
 
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-MÉTRICAS DE XGBoost
-ROC AUC Calculado: 0.9103300034789522
-Relatório de Classificação:
-              precision    recall  f1-score   support
+### 3. Acessar no navegador
 
-           0       0.92      0.93      0.93      7657
-           1       0.75      0.71      0.73      2118
+Streamlit:
+http://localhost:8501
 
-    accuracy                           0.89      9775
-   macro avg       0.83      0.82      0.83      9775
-weighted avg       0.88      0.89      0.88      9775
+------------------------------------------------------------
+## ESTRUTURA DO PROJETO
 
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-MÉTRICAS DE RandomForest
-ROC AUC Calculado: 0.8985239178898187
-Relatório de Classificação:
-              precision    recall  f1-score   support
+```
+credit-risk/
+├── model/        -> pipeline de treino e ML
+├── view/         -> dashboard Streamlit
+├── temp/         -> modelos serializados (pickle)
+├── docker/       -> configuração de deploy
+├── pyproject.toml
+└── docker-compose.yml
+```
 
-           0       0.92      0.92      0.92      7657
-           1       0.73      0.73      0.73      2118
+------------------------------------------------------------
+## PROBLEMAS IDENTIFICADOS NO DATASET
 
-    accuracy                           0.88      9775
-   macro avg       0.83      0.83      0.83      9775
-weighted avg       0.88      0.88      0.88      9775
+- 895 nulos em person_emp_length
+- 3116 nulos em loan_int_rate
+- Outliers em person_emp_length
+- 35 registros com idade > percentil 99.9% (66 anos)
 
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-MÉTRICAS DE LogisticRegression
-ROC AUC Calculado: 0.8425415195881295
-Relatório de Classificação:
-              precision    recall  f1-score   support
+------------------------------------------------------------
+## TRATAMENTO DE NULOS
 
-           0       0.91      0.85      0.88      7657
-           1       0.56      0.68      0.61      2118
+### person_emp_length
+- Aplicado filtro por faixa de renda (person_income)
+- Lower/upper bound de 1500
+- Mediana por grupo de renda
+- Fallback: mediana global do dataset
 
-    accuracy                           0.81      9775
-   macro avg       0.73      0.77      0.75      9775
-weighted avg       0.83      0.81      0.82      9775
+### loan_int_rate
+- Preenchido com mediana por loan_grade
 
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+------------------------------------------------------------
+## TRATAMENTO DE OUTLIERS
 
+- Outliers não foram removidos (considerados erros de input)
+- Idades > 100 anos:
+  - Ajustadas para age + person_emp_length
 
+------------------------------------------------------------
+## MODELOS UTILIZADOS
+
+- Logistic Regression
+- Random Forest
+- XGBoost (melhor performance)
+- LightGBM
+
+------------------------------------------------------------
+## MÉTRICA PRINCIPAL
+
+- ROC AUC (GridSearchCV)
+- Avaliação final com:
+  - Precision
+  - Recall
+  - F1-score
+  - Accuracy
+
+------------------------------------------------------------
+## MLFLOW
+
+Utilizado para:
+
+- Tracking de experimentos
+- Log de parâmetros
+- Log de métricas
+- Registro de modelos
+
+------------------------------------------------------------
+## MODELO FINAL
+
+Salvo como:
+
+```
+temp/credit_risk_model.pkl
+```
+
+Estrutura:
+
+```
+{
+  "model": pipeline_treinado,
+  "threshold": melhor_threshold
+}
+```
+
+------------------------------------------------------------
+## OBSERVAÇÕES
+
+- Pipeline inclui encoding e scaling automático
+- Threshold otimizado por F1-score
+- XGBoost apresentou melhor performance geral
+
+------------------------------------------------------------
+## AUTOR
+
+Hertz Rafael  
+GitHub: https://github.com/hertzrafael
