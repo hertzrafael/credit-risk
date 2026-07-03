@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, OrdinalEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, OrdinalEncoder, FunctionTransformer
 from sklearn.metrics import roc_auc_score, precision_recall_curve, precision_score, recall_score, f1_score, accuracy_score
 from sklearn.compose import ColumnTransformer
 
@@ -11,13 +11,14 @@ import numpy as np
 import mlflow
 import mlflow.sklearn
 import joblib
+import os
 
 
 class ModelTrain:
     
     def __init__(self, data: pd.DataFrame):
         self.data = data
-        
+
     def run(self):
         y = self.data['loan_status']
         X = self.data.drop('loan_status', axis=1)
@@ -102,4 +103,4 @@ class ModelTrain:
         best_model = best_row["Estimator"]
         best_threshold = best_row["Best Threshold"]
         
-        joblib.dump({"model": best_model, "threshold": best_threshold}, f"temp/credit_risk_model.pkl")
+        joblib.dump({"model": best_model, "threshold": best_threshold}, os.getenv("MODEL_PATH"))

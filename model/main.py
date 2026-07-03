@@ -4,10 +4,12 @@ from train.model_train import ModelTrain
 from pathlib import Path
 
 import mlflow
+import dotenv
+import os
 
 
 def _setup_dir_():
-    TEMP_DIR = Path("temp")
+    TEMP_DIR = Path(os.getenv("TEMP_DIR"))
     TEMP_DIR.mkdir(exist_ok=True)
     
     ARTIFACTS = TEMP_DIR / "mlartifacts"
@@ -26,6 +28,7 @@ def _setup_dir_():
 
 
 def main():
+    dotenv.load_dotenv()
     _setup_dir_()
     
     extracted_content = Extract().run()

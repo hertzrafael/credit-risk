@@ -11,7 +11,6 @@ class Transform:
             ._fix_person_emp_length_()
             ._fix_loan_int_rate_null_()
             ._fix_age_outlier_()
-            ._transform_cb_person_default_on_file_()
             ._result_()
         )
          
@@ -48,15 +47,6 @@ class Transform:
     
     def _fix_loan_int_rate_null_(self):
         self.df['loan_int_rate'] = self.df['loan_int_rate'].fillna(self.df.groupby('loan_grade')['loan_int_rate'].transform('median'))
-        
-        return self
-    
-    def _transform_cb_person_default_on_file_(self):
-        self.df["cb_person_default_on_file"] = (
-            self.df["cb_person_default_on_file"]
-            .map({"Y": 1, "N": 0})
-            .astype("int8")
-        )
         
         return self
     

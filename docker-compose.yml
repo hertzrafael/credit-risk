@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    container_name: credit-risk-app
+    environment:
+      - TEMP_DIR=/app/temp
+      - MODEL_PATH=/app/temp/credit_risk_model.pkl
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./docker/temp:/app/temp
